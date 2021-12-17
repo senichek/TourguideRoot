@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-RewardModuleApplication<rewardModule>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.olexiy.rewardModule.RewardModuleApplication",
+            "projectName": "rewardModule",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-TourguideModuleApplication<tourguideModule>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.olexiy.tourguideModule.TourguideModuleApplication",
+            "projectName": "tourguideModule",
+            "args": ""
+        }
+    ]
+}
