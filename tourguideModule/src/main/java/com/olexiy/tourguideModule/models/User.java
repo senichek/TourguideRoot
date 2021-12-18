@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.olexiy.tourguideModule.models.DTO.UserDTO;
 
+import gpsUtil.location.Attraction;
+import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,6 +34,28 @@ public class User {
 		this.phoneNumber = phoneNumber;
 		this.emailAddress = emailAddress;
 	}
+
+	public User(UserDTO userDTO) {
+        this.userId = userDTO.getUserId();
+        this.userName = userDTO.getUserName();
+        this.phoneNumber = userDTO.getPhoneNumber();
+        this.emailAddress = userDTO.getEmailAddress();
+        this.latestLocationTimestamp = userDTO.getLatestLocationTimestamp();
+    
+	  userDTO.getVisitedLocations().forEach(loc -> {
+		  Location location = new Location(loc.getLocationDTO().getLatitude(), loc.getLocationDTO().getLongitude());
+		  VisitedLocation visitedLocation = new VisitedLocation(userId, location, loc.getTimeVisited());
+		  this.visitedLocations.add(visitedLocation);
+	  });
+
+	  userDTO.getUserRewards().forEach(rew -> {
+		Location location = new Location(rew.getVisitedLocationDTO().getLocationDTO().getLatitude(), rew.getVisitedLocationDTO().getLocationDTO().getLongitude());
+		VisitedLocation visitedLocation = new VisitedLocation(userId, location, rew.getVisitedLocationDTO().getTimeVisited());
+		Attraction attraction = new Attraction(rew.getAttractionDTO().getAttractionName(), rew.getAttractionDTO().getCity(), rew.getAttractionDTO().getState(), rew.getAttractionDTO().getLatitude(), rew.getAttractionDTO().getLongitude());
+		UserReward userReward = new UserReward(visitedLocation, attraction);
+		this.userRewards.add(userReward);
+	  });
+    }
 	
 	public UUID getUserId() {
 		return userId;

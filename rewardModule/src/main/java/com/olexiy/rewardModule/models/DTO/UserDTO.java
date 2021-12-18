@@ -1,9 +1,12 @@
-package com.olexiy.tourguideModule.models;
+package com.olexiy.rewardModule.models.DTO;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import com.olexiy.rewardModule.models.User;
+
 
 public class UserDTO {
     private UUID userId;
@@ -12,10 +15,9 @@ public class UserDTO {
     private String emailAddress;
     private Date latestLocationTimestamp;
     private List<VisitedLocationDTO> visitedLocations = new ArrayList<>();
-    private List<UserReward> userRewards = new ArrayList<>();
+    private List<UserRewardDTO> userRewards = new ArrayList<>();
 
-    public UserDTO() {
-    }
+    public UserDTO() {}
 
     public UserDTO(User user) {
         this.userId = user.getUserId();
@@ -26,7 +28,9 @@ public class UserDTO {
         user.getVisitedLocations().forEach(loc -> {
             visitedLocations.add(new VisitedLocationDTO(loc));
         });
-        this.userRewards = user.getUserRewards();
+        user.getUserRewards().forEach(rew -> {
+            userRewards.add(new UserRewardDTO(rew));
+        });
     }
 
     public UUID getUserId() {
@@ -53,7 +57,7 @@ public class UserDTO {
         return visitedLocations;
     }
 
-    public List<UserReward> getUserRewards() {
+    public List<UserRewardDTO> getUserRewards() {
         return userRewards;
     }
 }

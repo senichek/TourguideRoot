@@ -1,4 +1,4 @@
-package com.olexiy.tourguideModule.models;
+package com.olexiy.rewardModule.models.DTO;
 
 import gpsUtil.location.Location;
 import lombok.Data;

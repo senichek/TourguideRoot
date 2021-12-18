@@ -2,7 +2,6 @@ package com.olexiy.tourguideModule.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,23 +9,17 @@ import java.util.concurrent.TimeUnit;
 
 import com.olexiy.tourguideModule.helper.Util;
 import com.olexiy.tourguideModule.models.User;
-import com.olexiy.tourguideModule.models.UserDTO;
 import com.olexiy.tourguideModule.models.UserReward;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserter;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import reactor.core.publisher.Mono;
 import rewardCentral.RewardCentral;
 
 @Service
@@ -37,8 +30,6 @@ public class RewardsService {
 
 	ExecutorService executorService = Executors.newFixedThreadPool(Util.calculateAmountofThreads());
 
-	@Autowired
-	private WebClient webClient;
 
 	// proximity in miles
     private int defaultProximityBuffer = 10;
@@ -74,31 +65,6 @@ public class RewardsService {
 				}
 			}
 		}
-	}
-
-	/* public UserDTO testRequest() {
-		User user = new User(UUID.randomUUID(), "TestUser", "555", "email@doc.com");
-		UserDTO dto = new UserDTO(user);
-
-        UserDTO bodyToMono = webClient.post()
-        .uri("/calculateRewards")
-		.body(Mono.just(dto), UserDTO.class)
-        .retrieve()
-        .bodyToMono(UserDTO.class)
-		.block();
-		logger.debug("testRequest " + bodyToMono.getUserName());
-        return bodyToMono;
-	} */
-
-	public UserDTO testRequest(List<UserDTO> users) {
-        UserDTO bodyToMono = webClient.post()
-        .uri("/calculateRewards")
-		.body(BodyInserters.fromObject(users))
-        .retrieve()
-        .bodyToMono(UserDTO.class)
-		.block();
-		logger.debug("testRequest " + bodyToMono.getUserName());
-        return bodyToMono;
 	}
 
 	public void calculateRewardsMultiThreading(List<User> users) {

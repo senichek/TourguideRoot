@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import com.olexiy.rewardModule.helper.Util;
 import com.olexiy.rewardModule.models.User;
 import com.olexiy.rewardModule.models.UserReward;
+import com.olexiy.rewardModule.models.DTO.UserDTO;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -66,7 +67,8 @@ public class RewardsService {
 		}
 	}
 
-	public void calculateRewardsMultiThreading(List<User> users) {
+
+	/* public void calculateRewardsMultiThreading(List<User> users) {
 		StopWatch stopWatch = new StopWatch();
 		logger.debug("STARTED calculating rewards.");
 		stopWatch.start();
@@ -89,6 +91,49 @@ public class RewardsService {
 		stopWatch.stop();
 		logger.debug("FINISHED calculating rewards. " + "Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
 		stopWatch.reset();
+	} */
+
+	public List<User> convertUserDTOtoUser(List<UserDTO> users) {
+		List<User> result = new ArrayList<>();
+		users.forEach(u -> {
+			result.add(new User(u));
+		});
+		return result;
+	}
+
+	public List<UserDTO> convertUserToUserDTO(List<User> users) {
+		List<UserDTO> result = new ArrayList<>();
+		users.forEach(u -> {
+			result.add(new UserDTO(u));
+		});
+		return result;
+	}
+
+	public List<User> calculateRewardsMultiThreading(List<User> users) {
+		StopWatch stopWatch = new StopWatch();
+		logger.debug("STARTED calculating rewards (Rewards Module).");
+		stopWatch.start();
+		List<Callable<Void>> tasks = new ArrayList<>();
+		users.forEach(u -> {
+			tasks.add(new Callable<Void>() {
+				@Override
+				public Void call() throws Exception {
+					calculateRewards(u);
+					return null;
+				}
+			});
+		});
+		try {
+			executorService.invokeAll(tasks);
+		} catch (InterruptedException e) {
+			logger.debug("<<executorService.invokeAll>> was interrupted");
+			e.printStackTrace();
+		}
+
+		stopWatch.stop();
+		logger.debug("FINISHED calculating rewards (Rewards Module). " + "Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
+		stopWatch.reset();
+		return users;
 	}
 
 	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {

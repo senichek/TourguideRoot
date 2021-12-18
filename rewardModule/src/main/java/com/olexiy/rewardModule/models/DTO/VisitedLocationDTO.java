@@ -1,4 +1,4 @@
-package com.olexiy.rewardModule.models;
+package com.olexiy.rewardModule.models.DTO;
 
 import java.util.Date;
 import java.util.UUID;

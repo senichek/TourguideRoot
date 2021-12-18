@@ -1,6 +1,5 @@
 package com.olexiy.tourguideModule.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.olexiy.tourguideModule.services.RewardsService;
 
 import org.springframework.context.annotation.Bean;

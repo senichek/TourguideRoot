@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 import com.olexiy.tourguideModule.helper.InternalTestHelper;
 import com.olexiy.tourguideModule.helper.Util;
 import com.olexiy.tourguideModule.models.User;
-import com.olexiy.tourguideModule.models.UserDTO;
+import com.olexiy.tourguideModule.models.DTO.UserDTO;
 import com.olexiy.tourguideModule.models.UserReward;
 import com.olexiy.tourguideModule.tracker.Tracker;
 
@@ -42,15 +42,17 @@ public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
+	private final RewardsServiceWEB rewardsServiceWEB;
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
 
 	ExecutorService executorService = Executors.newFixedThreadPool(Util.calculateAmountofThreads());
 
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
+	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, RewardsServiceWEB rewardsServiceWEB) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
+		this.rewardsServiceWEB = rewardsServiceWEB;
 
 		if (testMode) {
 			logger.info("TestMode enabled");
@@ -59,7 +61,7 @@ public class TourGuideService {
 			logger.debug("Finished initializing users");
 		}
 		//tracker = new Tracker(this);
-		tracker = new Tracker(this, rewardsService);
+		tracker = new Tracker(this, rewardsServiceWEB);
 		addShutDownHook();
 	}
 
@@ -81,12 +83,42 @@ public class TourGuideService {
 		return internalUserMap.values().stream().collect(Collectors.toList());
 	}
 
-	public List<UserDTO> getAllUsersDTO(List<User> users) {
+	public List<User> convertUserDTOtoUser(List<UserDTO> users) {
+		List<User> result = new ArrayList<>();
+		users.forEach(u -> {
+			result.add(new User(u));
+		});
+		return result;
+	}
+
+	public List<UserDTO> convertUserToUserDTO(List<User> users) {
 		List<UserDTO> result = new ArrayList<>();
 		users.forEach(u -> {
 			result.add(new UserDTO(u));
 		});
 		return result;
+	}
+
+	public List<User> copyRewardsBetweenUserCollections(List<User> usersWithRewards) {
+		List<User> allUsers = getAllUsers();
+				usersWithRewards.forEach(userWithRew -> {
+					if (userWithRew.getUserRewards().size() != 0 && userWithRew.getUserRewards() != null) {
+						allUsers.forEach(u -> {
+							if (u.getUserId().equals(userWithRew.getUserId())) {
+								userWithRew.getUserRewards().forEach(rew -> {
+									// if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0)
+									if (u.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(rew.attraction.attractionName)).count() == 0) {
+										// Making sure that the reward for visiting a specific attraction is not present in the collection
+										// because user can have only one reward per atrraction.
+										u.addUserReward(rew);
+										logger.debug("Copied reward from " + userWithRew.getUserName() + " to " + u.getUserName());
+									}
+								});
+							}
+						});
+					}
+				});
+		return getAllUsers();
 	}
 
 	public void addUser(User user) {

@@ -1,5 +1,10 @@
-package com.olexiy.rewardModule.models;
+package com.olexiy.rewardModule.models.DTO;
 
+import com.olexiy.rewardModule.models.UserReward;
+
+import lombok.Data;
+
+@Data
 public class UserRewardDTO {
     private VisitedLocationDTO visitedLocationDTO;
 	private AttractionDTO attractionDTO;

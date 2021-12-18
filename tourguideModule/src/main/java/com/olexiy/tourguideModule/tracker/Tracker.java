@@ -7,29 +7,26 @@ import java.util.concurrent.TimeUnit;
 
 import com.olexiy.tourguideModule.helper.Util;
 import com.olexiy.tourguideModule.models.User;
-import com.olexiy.tourguideModule.services.RewardsService;
+import com.olexiy.tourguideModule.models.DTO.UserDTO;
+import com.olexiy.tourguideModule.services.RewardsServiceWEB;
 import com.olexiy.tourguideModule.services.TourGuideService;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import reactor.core.publisher.Mono;
 
 public class Tracker extends Thread {
 	private Logger logger = LoggerFactory.getLogger(Tracker.class);
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
-	// My changes
-	// Executors.newSingleThreadExecutor was replaced by Executors.newFixedThreadPool(+ method that calculates the number of Threads we may need);
-	//private final ExecutorService executorService = Executors.newFixedThreadPool(Util.calculateAmountofThreads());
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 	private final TourGuideService tourGuideService;
-	private final RewardsService rewardsService;
+	private final RewardsServiceWEB rewardsServiceWEB;
 	private boolean stop = false;
 
-	public Tracker(TourGuideService tourGuideService, RewardsService rewardsService) {
+	public Tracker(TourGuideService tourGuideService, RewardsServiceWEB rewardsServiceWEB) {
 		this.tourGuideService = tourGuideService;
-		this.rewardsService = rewardsService;
+		this.rewardsServiceWEB = rewardsServiceWEB;
 
 		Util.calculateAmountofThreads();
 		
@@ -56,11 +53,14 @@ public class Tracker extends Thread {
 			List<User> users = tourGuideService.getAllUsers();
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
 			stopWatch.start();
-			// Removed users.forEach(u -> tourGuideService.trackUserLocation(u));
-			// and added lines 58 and 59.
 			tourGuideService.trackUserLocationMultiThreading(users);
-			rewardsService.calculateRewardsMultiThreading(users);
-			rewardsService.testRequest(tourGuideService.getAllUsersDTO(users));
+			// Sending the users' list (the list of Entities is converted to the list of DTOs) 
+			// to Rewards Module to calculate rewards.
+			List<UserDTO> usersDTOWithRewards = rewardsServiceWEB.calculateRewards(tourGuideService.convertUserToUserDTO(users));
+			// Converting the response (we receive back the list of userDTOs with rewards) back to Entity
+			List<User> usersWithRewards = tourGuideService.convertUserDTOtoUser(usersDTOWithRewards);
+			// Setting the rewards that we received via WEB to the users in Tourguide Module collection.
+			tourGuideService.copyRewardsBetweenUserCollections(usersWithRewards);
 			stopWatch.stop();
 			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
 			stopWatch.reset();

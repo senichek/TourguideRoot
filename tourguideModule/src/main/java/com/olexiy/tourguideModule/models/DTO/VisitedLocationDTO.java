@@ -1,4 +1,4 @@
-package com.olexiy.tourguideModule.models;
+package com.olexiy.tourguideModule.models.DTO;
 
 import java.util.Date;
 import java.util.UUID;
