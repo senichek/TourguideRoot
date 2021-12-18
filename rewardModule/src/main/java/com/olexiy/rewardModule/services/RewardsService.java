@@ -43,8 +43,9 @@ public class RewardsService {
 		this.rewardsCentral = rewardCentral;
 	}
 	
-	public void setProximityBuffer(int proximityBuffer) {
+	public int setProximityBuffer(int proximityBuffer) {
 		this.proximityBuffer = proximityBuffer;
+		return this.proximityBuffer;
 	}
 	
 	public void setDefaultProximityBuffer() {
@@ -66,32 +67,6 @@ public class RewardsService {
 			}
 		}
 	}
-
-
-	/* public void calculateRewardsMultiThreading(List<User> users) {
-		StopWatch stopWatch = new StopWatch();
-		logger.debug("STARTED calculating rewards.");
-		stopWatch.start();
-		List<Callable<Void>> tasks = new ArrayList<>();
-		users.forEach(u -> {
-			tasks.add(new Callable<Void>() {
-				@Override
-				public Void call() throws Exception {
-					calculateRewards(u);
-					return null;
-				}
-			});
-		});
-		try {
-			executorService.invokeAll(tasks);
-		} catch (InterruptedException e) {
-			logger.debug("<<executorService.invokeAll>> was interrupted");
-			e.printStackTrace();
-		}
-		stopWatch.stop();
-		logger.debug("FINISHED calculating rewards. " + "Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
-		stopWatch.reset();
-	} */
 
 	public List<User> convertUserDTOtoUser(List<UserDTO> users) {
 		List<User> result = new ArrayList<>();

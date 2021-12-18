@@ -1,7 +1,5 @@
 package com.olexiy.tourguideModule.config;
 
-import com.olexiy.tourguideModule.services.RewardsService;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -19,11 +17,6 @@ public class TourguideModuleConfig {
 	@Bean
 	public GpsUtil getGpsUtil() {
 		return new GpsUtil();
-	}
-	
-	@Bean
-	public RewardsService getRewardsService() {
-		return new RewardsService(getGpsUtil(), getRewardCentral());
 	}
 	
 	@Bean

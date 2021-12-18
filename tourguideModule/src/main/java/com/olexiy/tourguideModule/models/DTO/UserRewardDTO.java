@@ -1,6 +1,5 @@
 package com.olexiy.tourguideModule.models.DTO;
 
-import com.olexiy.tourguideModule.models.AttractionDTO;
 import com.olexiy.tourguideModule.models.UserReward;
 
 import lombok.Data;

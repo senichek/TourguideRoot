@@ -41,7 +41,6 @@ import tripPricer.TripPricer;
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	private final GpsUtil gpsUtil;
-	private final RewardsService rewardsService;
 	private final RewardsServiceWEB rewardsServiceWEB;
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
@@ -49,9 +48,8 @@ public class TourGuideService {
 
 	ExecutorService executorService = Executors.newFixedThreadPool(Util.calculateAmountofThreads());
 
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, RewardsServiceWEB rewardsServiceWEB) {
+	public TourGuideService(GpsUtil gpsUtil, RewardsServiceWEB rewardsServiceWEB) {
 		this.gpsUtil = gpsUtil;
-		this.rewardsService = rewardsService;
 		this.rewardsServiceWEB = rewardsServiceWEB;
 
 		if (testMode) {
@@ -168,10 +166,25 @@ public class TourGuideService {
 		stopWatch.reset();
 	}
 
-	public Map<Double, Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
+	/* public Map<Double, Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 		Map<Double, Attraction> fiveClosest = new HashMap<>();
 		for (Attraction attraction : gpsUtil.getAttractions()) {
 			fiveClosest.put(rewardsService.getDistance(visitedLocation.location, attraction), attraction);
+		}
+
+		Map<Double, Attraction> sorted = fiveClosest.entrySet().stream()
+				.sorted(Map.Entry.comparingByKey())
+				.limit(5)
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+						(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+		return sorted;
+	} */
+
+	public Map<Double, Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
+		Map<Double, Attraction> fiveClosest = new HashMap<>();
+		for (Attraction attraction : gpsUtil.getAttractions()) {
+			fiveClosest.put(rewardsServiceWEB.getDistance(visitedLocation.location, attraction), attraction);
 		}
 
 		Map<Double, Attraction> sorted = fiveClosest.entrySet().stream()
