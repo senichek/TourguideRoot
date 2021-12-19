@@ -8,17 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.zalando.jackson.datatype.money.MoneyModule;
 
-import rewardCentral.RewardCentral;
-
-
 @Configuration
 public class TourguideModuleConfig {
 	
-	@Bean
-	public RewardCentral getRewardCentral() {
-		return new RewardCentral();
-	}
-
 	@Bean
 	@Qualifier("RewardWebClient")
 	public WebClient getWebClientReward() {
@@ -42,6 +34,15 @@ public class TourguideModuleConfig {
 	public WebClient getWebClientTripPricer() {
 		return WebClient.builder()
         .baseUrl("http://localhost:8083")
+        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .build();
+	}
+
+	@Bean
+	@Qualifier("RewardCentralWebClient")
+	public WebClient getWebClientRewardCentral() {
+		return WebClient.builder()
+        .baseUrl("http://localhost:8084")
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .build();
 	}

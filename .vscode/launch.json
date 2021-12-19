@@ -39,6 +39,16 @@
             "mainClass": "com.olexiy.tripPricerModule.TripPricerModuleApplication",
             "projectName": "tripPricerModule",
             "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-RewardCentralModuleApplication<rewardCentralModule>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.olexiy.rewardCentralModule.RewardCentralModuleApplication",
+            "projectName": "rewardCentralModule",
+            "args": ""
         }
     ]
 }

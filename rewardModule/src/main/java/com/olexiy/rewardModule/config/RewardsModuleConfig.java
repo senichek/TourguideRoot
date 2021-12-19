@@ -1,7 +1,6 @@
 package com.olexiy.rewardModule.config;
 
-import com.olexiy.rewardModule.services.RewardsService;
-
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -20,11 +19,6 @@ public class RewardsModuleConfig {
 	}
 	
 	@Bean
-	public RewardsService getRewardsService() {
-		return new RewardsService(getGpsUtil(), getRewardCentral());
-	}
-	
-	@Bean
 	public RewardCentral getRewardCentral() {
 		return new RewardCentral();
 	}
@@ -33,6 +27,15 @@ public class RewardsModuleConfig {
 	public WebClient getWebClient() {
 		return WebClient.builder()
         .baseUrl("http://localhost:8080")
+        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .build();
+	}
+
+	@Bean
+	@Qualifier("RewardCentralWebClient")
+	public WebClient getWebClientRewardCentral() {
+		return WebClient.builder()
+        .baseUrl("http://localhost:8084")
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .build();
 	}

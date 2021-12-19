@@ -10,6 +10,7 @@ import com.olexiy.tourguideModule.models.User;
 import com.olexiy.tourguideModule.models.UserPreferences;
 import com.olexiy.tourguideModule.models.UserReward;
 import com.olexiy.tourguideModule.models.DTO.NearbyAttractionDTO;
+import com.olexiy.tourguideModule.services.RewardCentralServiceWEB;
 import com.olexiy.tourguideModule.services.RewardsServiceWEB;
 import com.olexiy.tourguideModule.services.TourGuideService;
 
@@ -26,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import rewardCentral.RewardCentral;
 import tripPricer.Provider;
 
 @RestController
@@ -38,9 +38,8 @@ public class TourguideController {
     @Autowired
     private RewardsServiceWEB rewardsServiceWEB;
 
-    // TODO RewardCentral будет отдельным приложением
     @Autowired
-	private RewardCentral rewardCentral;
+    private RewardCentralServiceWEB rewardCentralServiceWEB;
 
     @RequestMapping("/")
     public String index() {
@@ -77,7 +76,7 @@ public class TourguideController {
 		nearbyAttractionDTO.setAttractionLocation(new Location(v.latitude, v.longitude));
 		nearbyAttractionDTO.setUserLocation(currentLocation.location);
 		nearbyAttractionDTO.setDistanceInMiles(k); // Distance in kilometers acts as the KEY in the map of fiveClosestLocations.
-		nearbyAttractionDTO.setRewardsPoints(rewardCentral.getAttractionRewardPoints(v.attractionId, tourGuideService.getUser(userName).getUserId()));
+		nearbyAttractionDTO.setRewardsPoints(rewardCentralServiceWEB.getAttractionRewardPoints(v.attractionId, tourGuideService.getUser(userName).getUserId()));
 		result.add(nearbyAttractionDTO);
 		});
 	   return result;

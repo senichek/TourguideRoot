@@ -21,7 +21,6 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import rewardCentral.RewardCentral;
 
 @Service
 public class RewardsService {
@@ -35,12 +34,12 @@ public class RewardsService {
     private int defaultProximityBuffer = 10;
 	private int proximityBuffer = defaultProximityBuffer;
 	private int attractionProximityRange = 200;
-	private final GpsUtil gpsUtil;
-	private final RewardCentral rewardsCentral; //TODO вынести в отдельно приложение
+	private final GpsUtil gpsUtil; //TODO удалить
+	private final RewardCentralServiceWEB rewardCentralServiceWEB;
 	
-	public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
+	public RewardsService(GpsUtil gpsUtil, RewardCentralServiceWEB rewardCentralServiceWEB) {
 		this.gpsUtil = gpsUtil;
-		this.rewardsCentral = rewardCentral;
+		this.rewardCentralServiceWEB = rewardCentralServiceWEB;
 	}
 	
 	public int setProximityBuffer(int proximityBuffer) {
@@ -120,7 +119,7 @@ public class RewardsService {
 	}
 	
 	private int getRewardPoints(Attraction attraction, User user) {
-		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
+		return rewardCentralServiceWEB.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
 	}
 	
 	public double getDistance(Location loc1, Location loc2) {
