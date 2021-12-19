@@ -12,7 +12,6 @@ import com.olexiy.tourguideModule.models.UserReward;
 import com.olexiy.tourguideModule.models.DTO.NearbyAttractionDTO;
 import com.olexiy.tourguideModule.services.RewardsServiceWEB;
 import com.olexiy.tourguideModule.services.TourGuideService;
-import com.olexiy.tourguideModule.services.TripPricerServiceWEB;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
