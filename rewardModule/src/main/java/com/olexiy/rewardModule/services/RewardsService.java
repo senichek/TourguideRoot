@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
@@ -34,11 +33,11 @@ public class RewardsService {
     private int defaultProximityBuffer = 10;
 	private int proximityBuffer = defaultProximityBuffer;
 	private int attractionProximityRange = 200;
-	private final GpsUtil gpsUtil; //TODO удалить
+	private final GpsServiceWEB gpsServiceWEB;
 	private final RewardCentralServiceWEB rewardCentralServiceWEB;
 	
-	public RewardsService(GpsUtil gpsUtil, RewardCentralServiceWEB rewardCentralServiceWEB) {
-		this.gpsUtil = gpsUtil;
+	public RewardsService(GpsServiceWEB gpsServiceWEB, RewardCentralServiceWEB rewardCentralServiceWEB) {
+		this.gpsServiceWEB = gpsServiceWEB;
 		this.rewardCentralServiceWEB = rewardCentralServiceWEB;
 	}
 	
@@ -54,7 +53,7 @@ public class RewardsService {
 	public void calculateRewards(User user) {
 		logger.debug("<<calculateRewards>> was called for " + user.getUserName());
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
-		List<Attraction> attractions = gpsUtil.getAttractions();
+		List<Attraction> attractions = gpsServiceWEB.getAttractions();
 		for(VisitedLocation visitedLocation : userLocations) {
 			for(Attraction attraction : attractions) {
 				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {

@@ -32,6 +32,15 @@ public class RewardsModuleConfig {
 	}
 
 	@Bean
+	@Qualifier("GpsWebClient")
+	public WebClient getWebClientGPS() {
+		return WebClient.builder()
+        .baseUrl("http://localhost:8082")
+        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .build();
+	}
+
+	@Bean
 	@Qualifier("RewardCentralWebClient")
 	public WebClient getWebClientRewardCentral() {
 		return WebClient.builder()
