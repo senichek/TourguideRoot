@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
@@ -40,17 +39,17 @@ import tripPricer.TripPricer;
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-	private final GpsUtil gpsUtil;
 	private final RewardsServiceWEB rewardsServiceWEB;
+	private final GpsServiceWEB gpsServiceWEB;
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
 
 	ExecutorService executorService = Executors.newFixedThreadPool(Util.calculateAmountofThreads());
 
-	public TourGuideService(GpsUtil gpsUtil, RewardsServiceWEB rewardsServiceWEB) {
-		this.gpsUtil = gpsUtil;
+	public TourGuideService(RewardsServiceWEB rewardsServiceWEB, GpsServiceWEB gpsServiceWEB) {
 		this.rewardsServiceWEB = rewardsServiceWEB;
+		this.gpsServiceWEB = gpsServiceWEB;
 
 		if (testMode) {
 			logger.info("TestMode enabled");
@@ -58,7 +57,7 @@ public class TourGuideService {
 			initializeInternalUsers();
 			logger.debug("Finished initializing users");
 		}
-		//tracker = new Tracker(this);
+	
 		tracker = new Tracker(this, rewardsServiceWEB);
 		addShutDownHook();
 	}
@@ -104,7 +103,6 @@ public class TourGuideService {
 						allUsers.forEach(u -> {
 							if (u.getUserId().equals(userWithRew.getUserId())) {
 								userWithRew.getUserRewards().forEach(rew -> {
-									// if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0)
 									if (u.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(rew.attraction.attractionName)).count() == 0) {
 										// Making sure that the reward for visiting a specific attraction is not present in the collection
 										// because user can have only one reward per atrraction.
@@ -137,10 +135,11 @@ public class TourGuideService {
 
 	public VisitedLocation trackUserLocation(User user) {
 		logger.debug("<<trackUserLocation>> was called for " + user.getUserName());
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+		VisitedLocation visitedLocation = gpsServiceWEB.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
 		return visitedLocation;
 	}
+
 // TODO разобраться нужно ли выключить executorService
 	public void trackUserLocationMultiThreading(List<User> users) {
 		StopWatch stopWatch = new StopWatch();
@@ -166,24 +165,9 @@ public class TourGuideService {
 		stopWatch.reset();
 	}
 
-	/* public Map<Double, Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-		Map<Double, Attraction> fiveClosest = new HashMap<>();
-		for (Attraction attraction : gpsUtil.getAttractions()) {
-			fiveClosest.put(rewardsService.getDistance(visitedLocation.location, attraction), attraction);
-		}
-
-		Map<Double, Attraction> sorted = fiveClosest.entrySet().stream()
-				.sorted(Map.Entry.comparingByKey())
-				.limit(5)
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-						(oldValue, newValue) -> oldValue, LinkedHashMap::new));
-
-		return sorted;
-	} */
-
 	public Map<Double, Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 		Map<Double, Attraction> fiveClosest = new HashMap<>();
-		for (Attraction attraction : gpsUtil.getAttractions()) {
+		for (Attraction attraction : gpsServiceWEB.getAttractions()) {
 			fiveClosest.put(rewardsServiceWEB.getDistance(visitedLocation.location, attraction), attraction);
 		}
 
@@ -250,5 +234,4 @@ public class TourGuideService {
 		LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
 		return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
-
 }

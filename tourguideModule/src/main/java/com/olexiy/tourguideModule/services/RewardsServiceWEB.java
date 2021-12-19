@@ -7,6 +7,7 @@ import com.olexiy.tourguideModule.models.DTO.LocationDTO;
 import com.olexiy.tourguideModule.models.DTO.UserDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -18,6 +19,7 @@ import gpsUtil.location.Location;
 public class RewardsServiceWEB {
 
     @Autowired
+    @Qualifier("RewardWebClient")
     private WebClient webClient; // See implementation in TourguideModuleConfig.
 
     public List<UserDTO> calculateRewards(List<UserDTO> users) {

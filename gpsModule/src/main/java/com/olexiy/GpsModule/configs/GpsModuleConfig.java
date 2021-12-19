@@ -1,6 +1,5 @@
-package com.olexiy.tourguideModule.config;
+package com.olexiy.GpsModule.configs;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -11,11 +10,9 @@ import org.zalando.jackson.datatype.money.MoneyModule;
 import gpsUtil.GpsUtil;
 import rewardCentral.RewardCentral;
 
-
 @Configuration
-public class TourguideModuleConfig {
-	
-	@Bean
+public class GpsModuleConfig {
+    @Bean
 	public GpsUtil getGpsUtil() {
 		return new GpsUtil();
 	}
@@ -26,17 +23,7 @@ public class TourguideModuleConfig {
 	}
 
 	@Bean
-	@Qualifier("RewardWebClient")
-	public WebClient getWebClientReward() {
-		return WebClient.builder()
-        .baseUrl("http://localhost:8081")
-        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .build();
-	}
-
-	@Bean
-	@Qualifier("GpsWebClient")
-	public WebClient getWebClientGPS() {
+	public WebClient getWebClient() {
 		return WebClient.builder()
         .baseUrl("http://localhost:8082")
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

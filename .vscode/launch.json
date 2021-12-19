@@ -19,6 +19,16 @@
             "mainClass": "com.olexiy.tourguideModule.TourguideModuleApplication",
             "projectName": "tourguideModule",
             "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-GpsModuleApplication<GpsModule>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.olexiy.GpsModule.GpsModuleApplication",
+            "projectName": "GpsModule",
+            "args": ""
         }
     ]
 }
