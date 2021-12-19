@@ -1,19 +1,25 @@
 package com.olexiy.tourguideModule.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.olexiy.tourguideModule.models.User;
+import com.olexiy.tourguideModule.models.UserPreferences;
 import com.olexiy.tourguideModule.models.UserReward;
 import com.olexiy.tourguideModule.models.DTO.NearbyAttractionDTO;
 import com.olexiy.tourguideModule.services.RewardsServiceWEB;
 import com.olexiy.tourguideModule.services.TourGuideService;
+import com.olexiy.tourguideModule.services.TripPricerServiceWEB;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +28,7 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
+import tripPricer.Provider;
 
 @RestController
 public class TourguideController {
@@ -75,6 +82,31 @@ public class TourguideController {
 		result.add(nearbyAttractionDTO);
 		});
 	   return result;
+    }
+
+    @RequestMapping("/getAllCurrentLocations")
+    public HashMap<UUID, Location> getAllCurrentLocations() {
+    	// Get a list of every user's most recent location as JSON
+		HashMap<UUID, Location> latestLocationsPerUser = new HashMap<>();
+		tourGuideService.getAllUsers()
+				.forEach(u -> latestLocationsPerUser.put(u.getUserId(), u.getLastVisitedLocation().location));
+		return latestLocationsPerUser;
+    }
+
+    @RequestMapping("/getTripDeals")
+    public List<Provider> getTripDeals(@RequestParam String userName) {
+    	return tourGuideService.getTripDeals(getUser(userName));
+    }
+
+    @RequestMapping("/getUserPreferences") 
+    public UserPreferences getPreferences(@RequestParam String userName) {
+        return tourGuideService.getUser(userName).getUserPreferences();
+    }
+
+    @PostMapping("/getUserPreferences") 
+    public UserPreferences submitPreferences(@RequestParam String userName, @RequestBody UserPreferences pref) {
+    	tourGuideService.getUser(userName).setUserPreferences(pref);
+        return pref;
     }
 
     private User getUser(String userName) {

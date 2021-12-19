@@ -34,22 +34,22 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tripPricer.Provider;
-import tripPricer.TripPricer;
 
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	private final RewardsServiceWEB rewardsServiceWEB;
 	private final GpsServiceWEB gpsServiceWEB;
-	private final TripPricer tripPricer = new TripPricer();
+	private final TripPricerServiceWEB tripPricerServiceWEB;
 	public final Tracker tracker;
 	boolean testMode = true;
 
 	ExecutorService executorService = Executors.newFixedThreadPool(Util.calculateAmountofThreads());
 
-	public TourGuideService(RewardsServiceWEB rewardsServiceWEB, GpsServiceWEB gpsServiceWEB) {
+	public TourGuideService(RewardsServiceWEB rewardsServiceWEB, GpsServiceWEB gpsServiceWEB, TripPricerServiceWEB tripPricerServiceWEB) {
 		this.rewardsServiceWEB = rewardsServiceWEB;
 		this.gpsServiceWEB = gpsServiceWEB;
+		this.tripPricerServiceWEB = tripPricerServiceWEB;
 
 		if (testMode) {
 			logger.info("TestMode enabled");
@@ -125,7 +125,7 @@ public class TourGuideService {
 
 	public List<Provider> getTripDeals(User user) {
 		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
-		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(),
+		List<Provider> providers = tripPricerServiceWEB.getPrice(tripPricerApiKey, user.getUserId(),
 				user.getUserPreferences().getNumberOfAdults(),
 				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(),
 				cumulatativeRewardPoints);

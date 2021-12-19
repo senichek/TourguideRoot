@@ -29,6 +29,16 @@
             "mainClass": "com.olexiy.GpsModule.GpsModuleApplication",
             "projectName": "GpsModule",
             "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-TripPricerModuleApplication<tripPricerModule>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.olexiy.tripPricerModule.TripPricerModuleApplication",
+            "projectName": "tripPricerModule",
+            "args": ""
         }
     ]
 }

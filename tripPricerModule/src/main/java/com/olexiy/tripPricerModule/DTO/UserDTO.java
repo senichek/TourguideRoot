@@ -1,15 +1,12 @@
-package com.olexiy.tourguideModule.models.DTO;
+package com.olexiy.tripPricerModule.DTO;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import com.olexiy.tourguideModule.models.User;
+import com.olexiy.tripPricerModule.models.User;
 
-import lombok.Data;
-
-@Data
 public class UserDTO {
     private UUID userId;
     private String userName;

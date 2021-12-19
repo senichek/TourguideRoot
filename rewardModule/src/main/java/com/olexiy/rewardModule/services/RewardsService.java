@@ -36,7 +36,7 @@ public class RewardsService {
 	private int proximityBuffer = defaultProximityBuffer;
 	private int attractionProximityRange = 200;
 	private final GpsUtil gpsUtil;
-	private final RewardCentral rewardsCentral;
+	private final RewardCentral rewardsCentral; //TODO вынести в отдельно приложение
 	
 	public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
 		this.gpsUtil = gpsUtil;
