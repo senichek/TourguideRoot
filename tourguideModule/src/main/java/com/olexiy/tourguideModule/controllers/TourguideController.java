@@ -107,6 +107,11 @@ public class TourguideController {
         return pref;
     }
 
+    @RequestMapping("/getAllLocations")
+    public List<VisitedLocation> getAllLocationsOfUser(@RequestParam String userName) {
+		return tourGuideService.getUser(userName).getVisitedLocations();
+    }
+
     private User getUser(String userName) {
     	return tourGuideService.getUser(userName);
     }

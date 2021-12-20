@@ -23,10 +23,16 @@ public class RewardsModuleConfig {
 		return new RewardCentral();
 	}
 
+	/* In this project we have 5 different modules. Each module is hosted in a seperate Docker 
+	container. In order to access the different containers we use the same URL which 
+	is <http://host.docker.internal> but with different ports. Each module listens on a 
+	specific port (see EXPOSE in Dockerfile). If you need this app to run this project 
+	locally (outside of Docker) you can use the URL <http://localhost:Port_Number> */
+
 	@Bean
 	public WebClient getWebClient() {
 		return WebClient.builder()
-        .baseUrl("http://localhost:8080")
+        .baseUrl("http://host.docker.internal:8080")
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .build();
 	}
@@ -35,7 +41,7 @@ public class RewardsModuleConfig {
 	@Qualifier("GpsWebClient")
 	public WebClient getWebClientGPS() {
 		return WebClient.builder()
-        .baseUrl("http://localhost:8082")
+        .baseUrl("http://host.docker.internal:8082")
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .build();
 	}
@@ -44,7 +50,7 @@ public class RewardsModuleConfig {
 	@Qualifier("RewardCentralWebClient")
 	public WebClient getWebClientRewardCentral() {
 		return WebClient.builder()
-        .baseUrl("http://localhost:8084")
+        .baseUrl("http://host.docker.internal:8084")
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .build();
 	}
