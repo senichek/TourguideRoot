@@ -1,0 +1,28 @@
+version: '3'
+services:
+  rewardcentralmodule:
+    build: /rewardCentralModule
+    ports:
+      - "8084:8084"
+  trippricermodule:
+    build: /tripPricerModule
+    ports:
+      - "8083:8083"
+  gpsmodule:
+    build: /gpsModule
+    ports:
+      - "8082:8082"
+  rewardmodule:
+    build: /rewardModule
+    ports:
+      - "8081:8081"
+    depends_on:
+      - gpsmodule
+  tourguidemodule:
+    build: /tourguideModule
+    ports:
+      - "8080:8080"
+    depends_on:
+      - rewardmodule
+
+# Useful guide: https://www.youtube.com/watch?v=_m9JYAvFB8s&t=770s&ab_channel=JetBrainsTV
