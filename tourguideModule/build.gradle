@@ -1,10 +1,12 @@
 buildscript {
-    repositories {
-        mavenCentral()
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
     }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
-    }
+  }
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:2.6.2"
+  }
 }
 
 apply plugin: 'java'
@@ -44,13 +46,11 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.22'
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
     
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testImplementation  group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.6.RELEASE'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.1'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.22'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 }
-
 
 jacoco {
     toolVersion = "0.8.7"

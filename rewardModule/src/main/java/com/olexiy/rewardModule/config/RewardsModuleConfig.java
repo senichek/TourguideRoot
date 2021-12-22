@@ -1,8 +1,10 @@
 package com.olexiy.rewardModule.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,6 +15,25 @@ import rewardCentral.RewardCentral;
 
 @Configuration
 public class RewardsModuleConfig {
+
+	@Autowired
+	private Environment env;
+	
+	/* For testing we use <http://localhost:Port_Number>, we will use Profiles to switch
+	the URLs for testing purposes, i.e. if the profile is set to "test" we will use
+	<http://localhost:Port_Number> as URL. */
+	public String getUrl() {
+		// Checking if profile exists and if it's set to "test".
+		String url = "http://host.docker.internal:";
+		String[] activeProfiles = env.getActiveProfiles();
+		if (activeProfiles.length > 0 && activeProfiles[0] != null) { 
+			if (activeProfiles[0].equals("test")) {
+				url = "http://localhost:";
+			}
+		} 
+		return url;
+	}
+	
     @Bean
 	public GpsUtil getGpsUtil() {
 		return new GpsUtil();
@@ -32,7 +53,7 @@ public class RewardsModuleConfig {
 	@Bean
 	public WebClient getWebClient() {
 		return WebClient.builder()
-        .baseUrl("http://host.docker.internal:8080")
+        .baseUrl(getUrl() + "8080")
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .build();
 	}
@@ -41,7 +62,7 @@ public class RewardsModuleConfig {
 	@Qualifier("GpsWebClient")
 	public WebClient getWebClientGPS() {
 		return WebClient.builder()
-        .baseUrl("http://host.docker.internal:8082")
+        .baseUrl(getUrl() + "8082")
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .build();
 	}
@@ -50,7 +71,7 @@ public class RewardsModuleConfig {
 	@Qualifier("RewardCentralWebClient")
 	public WebClient getWebClientRewardCentral() {
 		return WebClient.builder()
-        .baseUrl("http://host.docker.internal:8084")
+        .baseUrl(getUrl() + "8084")
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .build();
 	}
