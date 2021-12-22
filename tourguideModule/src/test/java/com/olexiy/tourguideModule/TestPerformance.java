@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.concurrent.TimeUnit;
 
 import com.olexiy.tourguideModule.helper.InternalTestHelper;
+import com.olexiy.tourguideModule.services.RewardsServiceWEB;
 import com.olexiy.tourguideModule.services.TourGuideService;
 
 import org.apache.commons.lang3.time.StopWatch;
@@ -23,11 +24,14 @@ public class TestPerformance {
     @BeforeAll
 	private static void setUp() {
 		InternalTestHelper.setTestProfile(true);
-		InternalTestHelper.setInternalUserNumber(1000);
+		InternalTestHelper.setInternalUserNumber(100000);
 	}
 
     @Autowired
     private TourGuideService tourGuideService;
+
+    @Autowired
+    private RewardsServiceWEB rewardsServiceWEB;
 
     @Test
     public void highVolumeTrackLocation() {
@@ -40,4 +44,14 @@ public class TestPerformance {
 		assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
     }
 
+    @Test
+    public void highVolumeGetRewardsTest() {
+        StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+        rewardsServiceWEB.calculateRewards(tourGuideService.convertUserToUserDTO(tourGuideService.getAllUsers()));
+        stopWatch.stop();
+		System.out.println("highVolumeGetRewardsTest: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
+        stopWatch.reset();
+		assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
+    }
 }

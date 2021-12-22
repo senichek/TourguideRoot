@@ -44,6 +44,9 @@ public class TourguideModuleConfig {
 		return WebClient.builder()
         .baseUrl(getUrl() + "8081")
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+		.codecs(configurer -> configurer
+		.defaultCodecs()
+		.maxInMemorySize(256 * 1024 * 1024))
         .build();
 	}
 
