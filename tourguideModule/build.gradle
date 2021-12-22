@@ -52,6 +52,10 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 }
 
+test {
+  useJUnitPlatform()
+}
+
 jacoco {
     toolVersion = "0.8.7"
 }

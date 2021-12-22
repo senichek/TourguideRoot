@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.olexiy.tourguideModule.helper.InternalTestHelper;
 import com.olexiy.tourguideModule.helper.Util;
 import com.olexiy.tourguideModule.models.User;
 import com.olexiy.tourguideModule.models.DTO.UserDTO;
@@ -29,8 +30,14 @@ public class Tracker extends Thread {
 		this.rewardsServiceWEB = rewardsServiceWEB;
 
 		Util.calculateAmountofThreads();
-		
-		executorService.submit(this);
+
+		InternalTestHelper.isTestProfile();
+		// The Tracker starts automatially but we do not need this behavior
+		// during the testing. We will only start the tracker automatically
+		// if the profile is not equal to "test"	
+		if (!InternalTestHelper.isTestProfile()) {
+			executorService.submit(this);
+		}	
 	}
 	
 	/**
