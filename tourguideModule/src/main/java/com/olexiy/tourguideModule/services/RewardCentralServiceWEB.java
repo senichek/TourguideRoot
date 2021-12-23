@@ -24,7 +24,8 @@ public class RewardCentralServiceWEB {
 
         Integer response = webClient.post()
                 .uri("/getAttractionRewardPoints")
-                .body(BodyInserters.fromObject(data))
+               // .body(BodyInserters.fromObject(data))
+                .body(BodyInserters.fromValue(data))
                 .retrieve()
                 .bodyToMono(Integer.class)
                 .block();

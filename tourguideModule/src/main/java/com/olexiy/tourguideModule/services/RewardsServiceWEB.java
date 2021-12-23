@@ -25,7 +25,7 @@ public class RewardsServiceWEB {
     public List<UserDTO> calculateRewards(List<UserDTO> users) {
         List<UserDTO> response = webClient.post()
                 .uri("/calculateRewards")
-                .body(BodyInserters.fromObject(users))
+                .body(BodyInserters.fromValue(users))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<UserDTO>>() {
                 })
@@ -55,7 +55,7 @@ public class RewardsServiceWEB {
 
         Double response = webClient.post()
                 .uri("/getDistance")
-                .body(BodyInserters.fromObject(locations))
+                .body(BodyInserters.fromValue(locations))
                 .retrieve()
                 .bodyToMono(Double.class)
                 .block();

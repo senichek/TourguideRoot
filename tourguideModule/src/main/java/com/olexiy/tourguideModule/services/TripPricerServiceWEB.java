@@ -34,7 +34,7 @@ public class TripPricerServiceWEB {
 
         List<ProviderDTO> response = webClient.post()
                 .uri("/getPrice")
-                .body(BodyInserters.fromObject(data))
+                .body(BodyInserters.fromValue(data))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<ProviderDTO>>() {
                 })
