@@ -140,7 +140,6 @@ public class TourGuideService {
 		return visitedLocation;
 	}
 
-// TODO разобраться нужно ли выключить executorService
 	public void trackUserLocationMultiThreading(List<User> users) {
 		StopWatch stopWatch = new StopWatch();
 		logger.debug("STARTED tracking the users' locations.");
